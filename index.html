@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PXPADS — Grow Smarter. Scale Faster.</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --navy: #1A1A2E;
+    --mid: #0F3460;
+    --red: #E94560;
+    --white: #FFFFFF;
+    --gray: #6B7280;
+  }
+  * { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: #1A1A2E; color: #fff; }
+  h1,h2,h3,h4,h5,.font-display { font-family: 'Syne', sans-serif; }
+
+  .noise-bg::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0;
+  }
+
+  .glow-red { box-shadow: 0 0 40px rgba(233,69,96,0.3); }
+  .glow-red-sm { box-shadow: 0 0 20px rgba(233,69,96,0.2); }
+
+  .btn-red {
+    background: #E94560;
+    color: #fff;
+    transition: all 0.25s;
+    position: relative; overflow: hidden;
+  }
+  .btn-red::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: rgba(255,255,255,0.1);
+    transform: translateX(-100%);
+    transition: transform 0.3s;
+  }
+  .btn-red:hover::after { transform: translateX(0); }
+  .btn-red:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(233,69,96,0.4); }
+
+  .btn-outline {
+    border: 1.5px solid rgba(255,255,255,0.25);
+    color: #fff;
+    transition: all 0.25s;
+    background: transparent;
+  }
+  .btn-outline:hover {
+    border-color: #E94560;
+    background: rgba(233,69,96,0.08);
+    transform: translateY(-2px);
+  }
+
+  .card-glass {
+    background: rgba(15,52,96,0.35);
+    border: 1px solid rgba(255,255,255,0.07);
+    backdrop-filter: blur(12px);
+    transition: all 0.3s;
+  }
+  .card-glass:hover {
+    background: rgba(15,52,96,0.55);
+    border-color: rgba(233,69,96,0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #fff 0%, #E94560 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .pricing-popular {
+    background: linear-gradient(135deg, #0F3460, #1a4a8a);
+    border: 2px solid #E94560;
+    transform: scale(1.03);
+    box-shadow: 0 0 60px rgba(233,69,96,0.2);
+  }
+
+  .process-arrow::after {
+    content: '→';
+    color: #E94560;
+    font-size: 1.2rem;
+    margin: 0 0.5rem;
+  }
+
+  .kpi-card {
+    position: relative;
+    overflow: hidden;
+  }
+  .kpi-card::before {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #E94560, transparent);
+  }
+
+  .timeline-line {
+    position: relative;
+  }
+  .timeline-line::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(180deg, #E94560, rgba(233,69,96,0.1));
+    transform: translateX(-50%);
+  }
+
+  nav a { transition: color 0.2s; }
+  nav a:hover { color: #E94560; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-up { animation: fadeUp 0.8s ease forwards; }
+  .fade-up-delay-1 { animation-delay: 0.15s; opacity: 0; animation-fill-mode: forwards; animation-name: fadeUp; animation-duration: 0.8s; }
+  .fade-up-delay-2 { animation-delay: 0.3s; opacity: 0; animation-fill-mode: forwards; animation-name: fadeUp; animation-duration: 0.8s; }
+  .fade-up-delay-3 { animation-delay: 0.45s; opacity: 0; animation-fill-mode: forwards; animation-name: fadeUp; animation-duration: 0.8s; }
+
+  .hero-grid {
+    background-image: 
+      linear-gradient(rgba(233,69,96,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(233,69,96,0.05) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+
+  .tag {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #E94560;
+    font-family: 'Syne', sans-serif;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="fixed top-0 left-0 right-0 z-50 bg-opacity-90 backdrop-blur-md border-b border-white/5" style="background:rgba(26,26,46,0.92)">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <div class="font-display font-800 text-xl tracking-tight" style="font-family:'Syne',sans-serif;font-weight:800">
+      PXP<span style="color:#E94560">ADS</span>
+    </div>
+    <div class="hidden md:flex items-center gap-8 text-sm text-gray-300">
+      <a href="#services">Services</a>
+      <a href="#clients">Clients</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#results">Results</a>
+      <a href="#process">Process</a>
+    </div>
+    <div class="flex items-center gap-3">
+      <a href="#cta" class="btn-red px-5 py-2.5 rounded-lg text-sm font-semibold" style="font-family:'Syne',sans-serif">Get Free Audit</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="relative min-h-screen flex items-center pt-24 overflow-hidden noise-bg hero-grid" style="background:#1A1A2E">
+  <!-- Radial glow -->
+  <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full opacity-20" style="background:radial-gradient(circle,#E94560 0%,transparent 70%)"></div>
+  
+  <div class="relative z-10 max-w-7xl mx-auto px-6 py-20">
+    <div class="max-w-4xl">
+      <p class="tag mb-6 fade-up">Meta Ads Agency — All-in-One Growth Partner</p>
+      <h1 class="text-6xl md:text-8xl font-display font-extrabold leading-none mb-8 fade-up" style="font-family:'Syne',sans-serif;font-weight:800;letter-spacing:-0.03em">
+        Meta Ads.<br/>
+        All-in-One.<br/>
+        <span style="color:#E94560">All Yours.</span>
+      </h1>
+      <p class="text-lg md:text-xl text-gray-300 max-w-2xl mb-10 leading-relaxed fade-up-delay-1">
+        We build scalable Meta Ads growth systems — from research to reporting — so you can focus on building your business.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 fade-up-delay-2">
+        <a href="#cta" class="btn-red px-8 py-4 rounded-xl text-base font-bold text-center" style="font-family:'Syne',sans-serif">
+          Get Free Audit →
+        </a>
+        <a href="#cta" class="btn-outline px-8 py-4 rounded-xl text-base font-semibold text-center" style="font-family:'Syne',sans-serif">
+          Book 30-Min Strategy Call
+        </a>
+      </div>
+    </div>
+    <!-- Floating stat badges -->
+    <div class="absolute top-1/3 right-10 hidden xl:flex flex-col gap-4 fade-up-delay-3">
+      <div class="card-glass px-5 py-3 rounded-xl">
+        <div class="text-2xl font-bold" style="font-family:'Syne',sans-serif;color:#E94560">5x</div>
+        <div class="text-xs text-gray-400">Average ROAS</div>
+      </div>
+      <div class="card-glass px-5 py-3 rounded-xl">
+        <div class="text-2xl font-bold" style="font-family:'Syne',sans-serif;color:#E94560">90%+</div>
+        <div class="text-xs text-gray-400">Client Retention</div>
+      </div>
+      <div class="card-glass px-5 py-3 rounded-xl">
+        <div class="text-2xl font-bold" style="font-family:'Syne',sans-serif;color:#E94560">3%+</div>
+        <div class="text-xs text-gray-400">Avg CVR</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST STRIP -->
+<section class="py-6 border-y border-white/5" style="background:#0F3460">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="flex flex-wrap justify-center gap-6 md:gap-0 md:justify-between items-center">
+      <div class="flex items-center gap-2 px-4">
+        <span style="color:#E94560" class="text-lg">◆</span>
+        <span class="font-semibold text-sm" style="font-family:'Syne',sans-serif">All-in-One Ecosystem</span>
+      </div>
+      <div class="flex items-center gap-2 px-4">
+        <span style="color:#E94560" class="text-lg">◆</span>
+        <span class="font-semibold text-sm" style="font-family:'Syne',sans-serif">Meta Ads Specialist</span>
+      </div>
+      <div class="flex items-center gap-2 px-4">
+        <span style="color:#E94560" class="text-lg">◆</span>
+        <span class="font-semibold text-sm" style="font-family:'Syne',sans-serif">Transparent Reporting</span>
+      </div>
+      <div class="flex items-center gap-2 px-4">
+        <span style="color:#E94560" class="text-lg">◆</span>
+        <span class="font-semibold text-sm" style="font-family:'Syne',sans-serif">Performance Accountable</span>
+      </div>
+      <div class="flex items-center gap-2 px-4">
+        <span style="color:#E94560" class="text-lg">◆</span>
+        <span class="font-semibold text-sm" style="font-family:'Syne',sans-serif">Full-Funnel Strategy</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services" class="py-24" style="background:#1A1A2E">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="text-center mb-16">
+      <p class="tag mb-4">Our Framework</p>
+      <h2 class="text-4xl md:text-6xl font-display font-extrabold" style="font-family:'Syne',sans-serif;letter-spacing:-0.02em">All-in-One Growth System</h2>
+      <p class="text-gray-400 mt-4 text-lg max-w-xl mx-auto">Every step of your Meta Ads journey, owned and optimized by our team.</p>
+    </div>
+
+    <!-- Process flow -->
+    <div class="flex flex-wrap justify-center gap-3 mb-12">
+      <span class="card-glass px-4 py-2 rounded-full text-sm font-bold" style="font-family:'Syne',sans-serif;color:#E94560">RESEARCH</span>
+      <span class="text-gray-500 self-center">→</span>
+      <span class="card-glass px-4 py-2 rounded-full text-sm font-bold" style="font-family:'Syne',sans-serif">STRATEGY</span>
+      <span class="text-gray-500 self-center">→</span>
+      <span class="card-glass px-4 py-2 rounded-full text-sm font-bold" style="font-family:'Syne',sans-serif">CREATIVE</span>
+      <span class="text-gray-500 self-center">→</span>
+      <span class="card-glass px-4 py-2 rounded-full text-sm font-bold" style="font-family:'Syne',sans-serif">LANDING PAGE</span>
+      <span class="text-gray-500 self-center">→</span>
+      <span class="card-glass px-4 py-2 rounded-full text-sm font-bold" style="font-family:'Syne',sans-serif">LAUNCH</span>
+      <span class="text-gray-500 self-center">→</span>
+      <span class="card-glass px-4 py-2 rounded-full text-sm font-bold" style="font-family:'Syne',sans-serif">OPTIMIZE</span>
+      <span class="text-gray-500 self-center">→</span>
+      <span class="card-glass px-4 py-2 rounded-full text-sm font-bold" style="font-family:'Syne',sans-serif;color:#E94560">REPORT</span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="card-glass rounded-2xl p-6">
+        <div class="text-3xl mb-4">🔍</div>
+        <h3 class="font-bold text-lg mb-2" style="font-family:'Syne',sans-serif">Research</h3>
+        <p class="text-gray-400 text-sm leading-relaxed">Deep competitor analysis, audience profiling, and market opportunity mapping before a single dollar is spent.</p>
+      </div>
+      <div class="card-glass rounded-2xl p-6">
+        <div class="text-3xl mb-4">🎯</div>
+        <h3 class="font-bold text-lg mb-2" style="font-family:'Syne',sans-serif">Strategy</h3>
+        <p class="text-gray-400 text-sm leading-relaxed">Custom campaign architecture, funnel design, and budget allocation strategy built around your growth goals.</p>
+      </div>
+      <div class="card-glass rounded-2xl p-6">
+        <div class="text-3xl mb-4">🎨</div>
+        <h3 class="font-bold text-lg mb-2" style="font-family:'Syne',sans-serif">Creative</h3>
+        <p class="text-gray-400 text-sm leading-relaxed">High-converting ad creatives — copy, design, video — engineered to stop the scroll and drive clicks.</p>
+      </div>
+      <div class="card-glass rounded-2xl p-6">
+        <div class="text-3xl mb-4">🖥</div>
+        <h3 class="font-bold text-lg mb-2" style="font-family:'Syne',sans-serif">Landing Page</h3>
+        <p class="text-gray-400 text-sm leading-relaxed">Conversion-optimized landing pages designed to turn ad traffic into paying customers.</p>
+      </div>
+      <div class="card-glass rounded-2xl p-6">
+        <div class="text-3xl mb-4">🚀</div>
+        <h3 class="font-bold text-lg mb-2" style="font-family:'Syne',sans-serif">Launch</h3>
+        <p class="text-gray-400 text-sm leading-relaxed">Precision campaign setup, pixel configuration, and quality assurance before going live.</p>
+      </div>
+      <div class="card-glass rounded-2xl p-6">
+        <div class="text-3xl mb-4">⚙️</div>
+        <h3 class="font-bold text-lg mb-2" style="font-family:'Syne',sans-serif">Optimize</h3>
+        <p class="text-gray-400 text-sm leading-relaxed">Continuous A/B testing, bid adjustments, creative iteration, and audience refinement to scale winners.</p>
+      </div>
+      <div class="card-glass rounded-2xl p-6">
+        <div class="text-3xl mb-4">📊</div>
+        <h3 class="font-bold text-lg mb-2" style="font-family:'Syne',sans-serif">Report</h3>
+        <p class="text-gray-400 text-sm leading-relaxed">Clear, data-forward weekly and monthly reports with actionable insights — no vanity metrics, only what matters.</p>
+      </div>
+      <div class="card-glass rounded-2xl p-6 flex flex-col justify-center items-start" style="border-color:rgba(233,69,96,0.3);background:rgba(233,69,96,0.05)">
+        <p class="text-sm text-gray-400 mb-3">Ready to start?</p>
+        <a href="#cta" class="btn-red px-5 py-3 rounded-xl text-sm font-bold" style="font-family:'Syne',sans-serif">Free Audit →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CREATIVE FRAMEWORK -->
+<section class="py-24 relative overflow-hidden" style="background:#0F3460">
+  <div class="absolute inset-0 opacity-10" style="background:radial-gradient(circle at 80% 50%,#E94560,transparent 60%)"></div>
+  <div class="relative z-10 max-w-7xl mx-auto px-6">
+    <div class="text-center mb-16">
+      <p class="tag mb-4">Creative System</p>
+      <h2 class="text-4xl md:text-6xl font-display font-extrabold" style="font-family:'Syne',sans-serif;letter-spacing:-0.02em">The Creative Framework</h2>
+      <p class="text-gray-400 mt-4 text-lg max-w-xl mx-auto">Every ad we produce follows a proven 4-part structure built to convert at every stage.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div class="text-center">
+        <div class="w-16 h-16 mx-auto mb-5 rounded-2xl flex items-center justify-center text-2xl font-black" style="background:#E94560;font-family:'Syne',sans-serif">H</div>
+        <h3 class="text-xl font-bold mb-3" style="font-family:'Syne',sans-serif;color:#E94560">HOOK</h3>
+        <p class="text-gray-400 text-sm leading-relaxed">Stop the scroll instantly. We craft pattern-interrupting openers that grab attention in the first 1–2 seconds — the most critical moment of any ad.</p>
+      </div>
+      <div class="text-center">
+        <div class="w-16 h-16 mx-auto mb-5 rounded-2xl flex items-center justify-center text-2xl font-black" style="background:rgba(233,69,96,0.2);border:2px solid #E94560;font-family:'Syne',sans-serif;color:#E94560">V</div>
+        <h3 class="text-xl font-bold mb-3" style="font-family:'Syne',sans-serif">VALUE</h3>
+        <p class="text-gray-400 text-sm leading-relaxed">Clearly communicate the transformation. We articulate the core benefit so prospects instantly understand why they need your product or service.</p>
+      </div>
+      <div class="text-center">
+        <div class="w-16 h-16 mx-auto mb-5 rounded-2xl flex items-center justify-center text-2xl font-black" style="background:rgba(233,69,96,0.2);border:2px solid #E94560;font-family:'Syne',sans-serif;color:#E94560">P</div>
+        <h3 class="text-xl font-bold mb-3" style="font-family:'Syne',sans-serif">PROOF</h3>
+        <p class="text-gray-400 text-sm leading-relaxed">Build trust through social proof, data, testimonials, or case studies. We integrate evidence that removes doubt and validates the buying decision.</p>
+      </div>
+      <div class="text-center">
+        <div class="w-16 h-16 mx-auto mb-5 rounded-2xl flex items-center justify-center text-2xl font-black" style="background:#E94560;font-family:'Syne',sans-serif">A</div>
+        <h3 class="text-xl font-bold mb-3" style="font-family:'Syne',sans-serif;color:#E94560">ACTION</h3>
+        <p class="text-gray-400 text-sm leading-relaxed">Drive the click with urgency and clarity. Every ad ends with a compelling CTA that guides the prospect exactly where to go next.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- IDEAL CLIENT -->
+<section id="clients" class="py-24" style="background:#1A1A2E">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="text-center mb-16">
+      <p class="tag mb-4">Who We Serve</p>
+      <h2 class="text-4xl md:text-6xl font-display font-extrabold" style="font-family:'Syne',sans-serif;letter-spacing:-0.02em">Built For Ambitious Brands</h2>
+      <p class="text-gray-400 mt-4 text-lg max-w-xl mx-auto">We partner with businesses ready to scale — not experiment.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div class="card-glass rounded-2xl p-7">
+        <div class="text-4xl mb-5">🛒</div>
+        <h3 class="text-xl font-bold mb-3" style="font-family:'Syne',sans-serif">E-Commerce Scaling Brands</h3>
+        <p class="text-gray-400 text-sm leading-relaxed">You have product-market fit and are ready to pour fuel on profitable Meta Ads to grow revenue predictably.</p>
+      </div>
+      <div class="card-glass rounded-2xl p-7">
+        <div class="text-4xl mb-5">📦</div>
+        <h3 class="text-xl font-bold mb-3" style="font-family:'Syne',sans-serif">D2C Brands</h3>
+        <p class="text-gray-400 text-sm leading-relaxed">Direct-to-consumer brands who want to own the customer relationship and build scalable acquisition systems.</p>
+      </div>
+      <div class="card-glass rounded-2xl p-7">
+        <div class="text-4xl mb-5">🏢</div>
+        <h3 class="text-xl font-bold mb-3" style="font-family:'Syne',sans-serif">Service Businesses</h3>
+        <p class="text-gray-400 text-sm leading-relaxed">High-ticket service providers who want consistent qualified leads delivered through smart, targeted Meta campaigns.</p>
+      </div>
+      <div class="card-glass rounded-2xl p-7">
+        <div class="text-4xl mb-5">📱</div>
+        <h3 class="text-xl font-bold mb-3" style="font-family:'Syne',sans-serif">Apps & SaaS</h3>
+        <p class="text-gray-400 text-sm leading-relaxed">Digital products focused on user acquisition, free trial signups, and paid conversions through performance-driven funnels.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESULTS / KPI -->
+<section id="results" class="py-24 relative overflow-hidden" style="background:#0F3460">
+  <div class="absolute inset-0 opacity-10" style="background:radial-gradient(circle at 20% 50%,#E94560,transparent 60%)"></div>
+  <div class="relative z-10 max-w-7xl mx-auto px-6">
+    <div class="text-center mb-16">
+      <p class="tag mb-4">The Numbers</p>
+      <h2 class="text-4xl md:text-6xl font-display font-extrabold" style="font-family:'Syne',sans-serif;letter-spacing:-0.02em">Results We Deliver</h2>
+      <p class="text-gray-400 mt-4 text-lg">What benchmarks do we hold ourselves accountable to?</p>
+    </div>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-5">
+      <div class="kpi-card card-glass rounded-2xl p-8 text-center">
+        <div class="text-5xl md:text-7xl font-black mb-2" style="font-family:'Syne',sans-serif;color:#E94560">3–5x</div>
+        <div class="text-sm text-gray-400 uppercase tracking-widest font-semibold">ROAS</div>
+        <div class="text-xs text-gray-500 mt-2">Return on Ad Spend</div>
+      </div>
+      <div class="kpi-card card-glass rounded-2xl p-8 text-center">
+        <div class="text-5xl md:text-7xl font-black mb-2" style="font-family:'Syne',sans-serif;color:#E94560">&gt;1.5%</div>
+        <div class="text-sm text-gray-400 uppercase tracking-widest font-semibold">CTR</div>
+        <div class="text-xs text-gray-500 mt-2">Click-Through Rate</div>
+      </div>
+      <div class="kpi-card card-glass rounded-2xl p-8 text-center">
+        <div class="text-5xl md:text-7xl font-black mb-2" style="font-family:'Syne',sans-serif;color:#E94560">&gt;3%</div>
+        <div class="text-sm text-gray-400 uppercase tracking-widest font-semibold">CVR</div>
+        <div class="text-xs text-gray-500 mt-2">Conversion Rate</div>
+      </div>
+      <div class="kpi-card card-glass rounded-2xl p-8 text-center">
+        <div class="text-5xl md:text-7xl font-black mb-2" style="font-family:'Syne',sans-serif;color:#E94560">90%+</div>
+        <div class="text-sm text-gray-400 uppercase tracking-widest font-semibold">Retention</div>
+        <div class="text-xs text-gray-500 mt-2">Client Retention Rate</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" class="py-24" style="background:#1A1A2E">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="text-center mb-16">
+      <p class="tag mb-4">Transparent Pricing</p>
+      <h2 class="text-4xl md:text-6xl font-display font-extrabold" style="font-family:'Syne',sans-serif;letter-spacing:-0.02em">Simple, Scalable Plans</h2>
+      <p class="text-gray-400 mt-4 text-lg max-w-xl mx-auto">No hidden fees. No lock-in surprises. Just clear pricing tied to performance.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 items-start">
+
+      <!-- Starter -->
+      <div class="card-glass rounded-2xl p-7">
+        <p class="tag mb-4">Starter</p>
+        <div class="text-3xl font-black mb-1" style="font-family:'Syne',sans-serif">Rp 7.5M</div>
+        <div class="text-gray-500 text-sm mb-6">/ month</div>
+        <ul class="space-y-3 text-sm text-gray-300 mb-8">
+          <li class="flex gap-2"><span style="color:#E94560">✓</span> 1 Active Campaign</li>
+          <li class="flex gap-2"><span style="color:#E94560">✓</span> Audience Research</li>
+          <li class="flex gap-2"><span style="color:#E94560">✓</span> Ad Creative (5 sets)</li>
+          <li class="flex gap-2"><span style="color:#E94560">✓</span> Monthly Reporting</li>
+          <li class="flex gap-2"><span style="color:#E94560">✓</span> Dedicated Account Manager</li>
+          <li class="flex gap-2 text-gray-600"><span>✗</span> Landing Page Build</li>
+          <li class="flex gap-2 text-gray-600"><span>✗</span> A/B Testing</li>
+        </ul>
+        <a href="#cta" class="btn-outline w-full py-3 rounded-xl text-sm font-bold text-center block" style="font-family:'Syne',sans-serif">Get Started</a>
+      </div>
+
+      <!-- Growth - Popular -->
+      <div class="pricing-popular rounded-2xl p-7 relative">
+        <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-red-500 text-white text-xs font-bold px-4 py-1.5 rounded-full" style="background:#E94560;font-family:'Syne',sans-serif;letter-spacing:0.1em">MOST POPULAR</div>
+        <p class="tag mb-4">Growth</p>
+        <div class="text-3xl font-black mb-1" style="font-family:'Syne',sans-serif">Rp 15M</div>
+        <div class="text-gray-400 text-sm mb-6">/ month</div>
+        <ul class="space-y-3 text-sm text-gray-200 mb-8">
+          <li class="flex gap-2"><span style="color:#E94560">✓</span> 3 Active Campaigns</li>
+          <li class="flex gap-2"><span style="color:#E94560">✓</span> Full Audience Research</li>
+          <li class="flex gap-2"><span style="color:#E94560">✓</span> Ad Creative (15 sets)</li>
+          <li class="flex gap-2"><span style="color:#E94560">✓</span> Landing Page Build (1)</li>
+          <li class="flex gap-2"><span style="color:#E94560">✓</span> A/B Testing</li>
+          <li class="flex gap-2"><span style="color:#E94560">✓</span> Weekly Reporting</li>
+          <li class="flex gap-2"><span style="color:#E94560">✓</span> Strategy Session Monthly</li>
+        </ul>
+        <a href="#cta" class="btn-red w-full py-3 rounded-xl text-sm font-bold text-center block" style="font-family:'Syne',sans-serif">Start Growing →</a>
+      </div>
+
+      <!-- Scale -->
+      <div class="card-glass rounded-2xl p-7">
+        <p class="tag mb-4">Scale</p>
+        <div class="text-3xl font-black mb-1" style="font-family:'Syne',sans-serif">Rp 30M</div>
+        <div class="text-gray-500 text-sm mb-6">/ month</div>
+        <ul class="space-y-3 text-sm text-gray-300 mb-8">
+          <li class="flex gap-2"><span style="color:#E94560">✓</span> Unlimited Campaigns</li>
+          <li class="flex gap-2"><span style="color:#E94560">✓</span> Full Research Suite</li>
+          <li class="flex gap-2"><span style="color:#E94560">✓</span> Ad Creative (30+ sets)</li>
+          <li class="flex gap-2"><span style="color:#E94560">✓</span> Landing Pages (3)</li>
+          <li class="flex gap-2"><span style="color:#E94560">✓</span> Advanced A/B Testing</li>
+          <li class="flex gap-2"><span style="color:#E94560">✓</span> Real-time Dashboard</li>
+          <li class="flex gap-2"><span style="color:#E94560">✓</span> Bi-weekly Strategy Calls</li>
+        </ul>
+        <a href="#cta" class="btn-outline w-full py-3 rounded-xl text-sm font-bold text-center block" style="font-family:'Syne',sans-serif">Get Started</a>
+      </div>
+
+      <!-- Enterprise -->
+      <div class="card-glass rounded-2xl p-7 relative" style="border-color:rgba(255,255,255,0.15)">
+        <p class="tag mb-4">Enterprise</p>
+        <div class="text-3xl font-black mb-1" style="font-family:'Syne',sans-serif">Custom</div>
+        <div class="text-gray-500 text-sm mb-6">Tailored to your needs</div>
+        <ul class="space-y-3 text-sm text-gray-300 mb-8">
+          <li class="flex gap-2"><span style="color:#E94560">✓</span> Everything in Scale</li>
+          <li class="flex gap-2"><span style="color:#E94560">✓</span> Dedicated Team</li>
+          <li class="flex gap-2"><span style="color:#E94560">✓</span> Custom Integrations</li>
+          <li class="flex gap-2"><span style="color:#E94560">✓</span> White-label Options</li>
+          <li class="flex gap-2"><span style="color:#E94560">✓</span> Priority Support 24/7</li>
+          <li class="flex gap-2"><span style="color:#E94560">✓</span> Executive Reporting</li>
+          <li class="flex gap-2"><span style="color:#E94560">✓</span> SLA Guarantee</li>
+        </ul>
+        <a href="#cta" class="btn-outline w-full py-3 rounded-xl text-sm font-bold text-center block" style="font-family:'Syne',sans-serif">Contact Us</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ONBOARDING PROCESS -->
+<section id="process" class="py-24" style="background:#0F3460">
+  <div class="max-w-5xl mx-auto px-6">
+    <div class="text-center mb-16">
+      <p class="tag mb-4">Onboarding</p>
+      <h2 class="text-4xl md:text-6xl font-display font-extrabold" style="font-family:'Syne',sans-serif;letter-spacing:-0.02em">From Zero to Launch in 4 Weeks</h2>
+      <p class="text-gray-400 mt-4 text-lg max-w-xl mx-auto">A structured sprint to get your growth engine running — fast.</p>
+    </div>
+    <div class="space-y-5">
+      <div class="card-glass rounded-2xl p-7 flex flex-col md:flex-row gap-6 items-start">
+        <div class="flex-shrink-0 w-24 text-center">
+          <div class="text-xs font-bold uppercase tracking-widest mb-1" style="color:#E94560;font-family:'Syne',sans-serif">Week 1</div>
+          <div class="text-2xl font-black" style="font-family:'Syne',sans-serif">01</div>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-2" style="font-family:'Syne',sans-serif">Discovery</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">Deep-dive into your business, goals, current performance, competitive landscape, and target audience. We align on KPIs and establish your baseline.</p>
+        </div>
+      </div>
+      <div class="card-glass rounded-2xl p-7 flex flex-col md:flex-row gap-6 items-start">
+        <div class="flex-shrink-0 w-24 text-center">
+          <div class="text-xs font-bold uppercase tracking-widest mb-1" style="color:#E94560;font-family:'Syne',sans-serif">Week 2</div>
+          <div class="text-2xl font-black" style="font-family:'Syne',sans-serif">02</div>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-2" style="font-family:'Syne',sans-serif">Research & Strategy</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">Comprehensive audience research, competitor ad analysis, and campaign blueprint. We finalize targeting, messaging strategy, and funnel structure.</p>
+        </div>
+      </div>
+      <div class="card-glass rounded-2xl p-7 flex flex-col md:flex-row gap-6 items-start">
+        <div class="flex-shrink-0 w-24 text-center">
+          <div class="text-xs font-bold uppercase tracking-widest mb-1" style="color:#E94560;font-family:'Syne',sans-serif">Week 3</div>
+          <div class="text-2xl font-black" style="font-family:'Syne',sans-serif">03</div>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-2" style="font-family:'Syne',sans-serif">Creative & Landing Page</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">Ad creative production (static, video, carousel) and landing page build. All assets go through our HOOK-VALUE-PROOF-ACTION review process before approval.</p>
+        </div>
+      </div>
+      <div class="card-glass rounded-2xl p-7 flex flex-col md:flex-row gap-6 items-start">
+        <div class="flex-shrink-0 w-24 text-center">
+          <div class="text-xs font-bold uppercase tracking-widest mb-1" style="color:#E94560;font-family:'Syne',sans-serif">Week 4</div>
+          <div class="text-2xl font-black" style="font-family:'Syne',sans-serif">04</div>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-2" style="font-family:'Syne',sans-serif">Launch</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">Campaign goes live. Pixel tracking verified, audience segments activated, and initial performance monitoring begins. You're live and scaling.</p>
+        </div>
+      </div>
+      <div class="card-glass rounded-2xl p-7 flex flex-col md:flex-row gap-6 items-start" style="border-color:rgba(233,69,96,0.3);background:rgba(233,69,96,0.05)">
+        <div class="flex-shrink-0 w-24 text-center">
+          <div class="text-xs font-bold uppercase tracking-widest mb-1" style="color:#E94560;font-family:'Syne',sans-serif">Ongoing</div>
+          <div class="text-2xl font-black" style="font-family:'Syne',sans-serif;color:#E94560">∞</div>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-2" style="font-family:'Syne',sans-serif;color:#E94560">Optimize & Scale</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">Continuous data analysis, creative iteration, audience expansion, and budget optimization. We hold ourselves accountable to your KPIs — every single week.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section id="cta" class="py-28 relative overflow-hidden" style="background:#1A1A2E">
+  <div class="absolute inset-0" style="background:radial-gradient(circle at 50% 50%,rgba(233,69,96,0.15),transparent 70%)"></div>
+  <div class="relative z-10 max-w-4xl mx-auto px-6 text-center">
+    <p class="tag mb-6">Let's Build Together</p>
+    <h2 class="text-5xl md:text-7xl font-display font-extrabold mb-6" style="font-family:'Syne',sans-serif;letter-spacing:-0.03em;line-height:1.05">
+      Ready to Build Your<br/><span style="color:#E94560">Growth Engine?</span>
+    </h2>
+    <p class="text-gray-400 text-xl mb-10 max-w-xl mx-auto leading-relaxed">
+      Start with a free audit. We'll analyze your current Meta Ads setup and show you exactly where the money is leaking — and how to fix it.
+    </p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="mailto:hello@pxpads.com" class="btn-red px-10 py-5 rounded-xl text-lg font-bold glow-red" style="font-family:'Syne',sans-serif">
+        Start With Free Audit →
+      </a>
+      <a href="mailto:hello@pxpads.com" class="btn-outline px-10 py-5 rounded-xl text-lg font-semibold" style="font-family:'Syne',sans-serif">
+        Book Strategy Call
+      </a>
+    </div>
+    <p class="text-gray-600 text-sm mt-6">No commitment. No credit card. Just clarity.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="py-12 border-t border-white/5" style="background:#0F3460">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="flex flex-col md:flex-row justify-between items-start gap-8">
+      <div>
+        <div class="text-2xl font-black mb-2" style="font-family:'Syne',sans-serif;font-weight:800">
+          PXP<span style="color:#E94560">ADS</span>
+        </div>
+        <p class="text-gray-400 text-sm mb-4">Grow Smarter. Scale Faster.</p>
+        <p class="text-gray-400 text-sm">All-in-One Meta Ads Growth Partner</p>
+      </div>
+      <div class="flex flex-col gap-2 text-sm text-gray-400">
+        <span class="font-semibold text-white mb-1" style="font-family:'Syne',sans-serif">Contact</span>
+        <a href="mailto:hello@pxpads.com" class="hover:text-white transition-colors">hello@pxpads.com</a>
+        <a href="https://pxpads.com" class="hover:text-white transition-colors">pxpads.com</a>
+      </div>
+      <div class="flex flex-col gap-2 text-sm text-gray-400">
+        <span class="font-semibold text-white mb-1" style="font-family:'Syne',sans-serif">Services</span>
+        <span>Meta Ads Management</span>
+        <span>Creative Production</span>
+        <span>Landing Page Design</span>
+        <span>Full-Funnel Strategy</span>
+      </div>
+    </div>
+    <div class="border-t border-white/5 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
+      <p class="text-gray-600 text-sm">© 2025 PXPADS. All rights reserved.</p>
+      <p class="text-gray-600 text-sm">Built for performance. Designed to convert.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Sticky nav bg on scroll
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) {
+      nav.style.borderBottomColor = 'rgba(255,255,255,0.08)';
+    } else {
+      nav.style.borderBottomColor = 'rgba(255,255,255,0.05)';
+    }
+  });
+</script>
+</body>
+</html>
